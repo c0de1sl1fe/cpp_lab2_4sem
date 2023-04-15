@@ -13,10 +13,10 @@ struct stats
 };
 
 
-stats InsertSort(std::vector<int>& arr, int n) //сортировка вставками
+stats InsertSort(std::vector<int>& arr) //сортировка вставками
 {
     stats res;
-    for (int i = 1; i < n; i++) {
+    for (int i = 1; i < arr.size(); i++) {
         for (int j = i; j > 0 && arr[j - 1] > arr[j]; j--, res.comparison_count++) {
             res.copy_count++;
             int tmp = arr[j - 1];
@@ -24,6 +24,44 @@ stats InsertSort(std::vector<int>& arr, int n) //сортировка встав
             arr[j] = tmp;
         }
     }
+    return res;
+}
+
+stats QuickSort(std::vector<int>& arr, int begin, int end)
+{
+    stats res;
+    int left = begin, right = end - 1;
+    int mid = (left + right) / 2;
+    while (left <= right)
+    {
+        while (arr[left] < arr[mid])
+        {
+            res.comparison_count++;
+            left++;
+        }
+        res.comparison_count++;
+        while (arr[right] > arr[mid])
+        {
+            res.comparison_count++;
+            right--;
+        }
+        res.comparison_count++;
+        if (left <= right)
+        {
+            std::swap(arr[left], arr[right]);
+            res.copy_count++;
+            left++;
+            right--;
+        }
+    }
+    if (begin < right)
+    {
+        res += QuickSort(arr, begin, right+1);
+    }
+    if (end > left)
+    {
+        res += QuickSort(arr, left+1, end);
+    } 
     return res;
 }
 void printMenu()
@@ -92,10 +130,12 @@ void main()
         case(1):
         {
             std::vector<int> test;
-            test.push_back(4);
             test.push_back(5);
+            test.push_back(4);
             test.push_back(3);
-            stats tmp = InsertSort(test, test.size());
+            test.push_back(2);
+            test.push_back(1);
+            stats tmp = InsertSort(test);
             std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
             for (int i = 0; i < test.size(); i++)
             {
@@ -106,6 +146,18 @@ void main()
         }
         case(2):
         {
+            std::vector<int> test;
+            test.push_back(5);
+            test.push_back(3);
+            test.push_back(4);
+            test.push_back(3);
+            stats tmp = QuickSort(test, 0, test.size());
+            std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
+            for (int i = 0; i < test.size(); i++)
+            {
+                std::cout << test[i] << " ";
+            }
+            system("pause");
             break;
         }
         case(3):
