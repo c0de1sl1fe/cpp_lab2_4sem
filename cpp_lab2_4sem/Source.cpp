@@ -1,19 +1,22 @@
 ﻿#include <iostream>
 #include <vector>
+#include <chrono>
+#include <fstream>
 
 
 struct stats
 {
     size_t comparison_count = 0;
-    size_t copy_count = 0;    void operator+=(const stats& rhs)
+    size_t copy_count = 0;    size_t time = 0;    void operator+=(const stats& rhs)
     {
         comparison_count += rhs.comparison_count;
         copy_count += rhs.copy_count;
+        time += rhs.time;
     }
 };
 
 
-stats InsertSort(std::vector<int>& arr) //сортировка вставками
+stats InsertSort(std::vector<int>& arr) 
 {
     stats res;
     for (int i = 1; i < arr.size(); i++) {
@@ -62,6 +65,161 @@ stats QuickSort(std::vector<int>& arr, int begin, int end)
     {
         res += QuickSort(arr, left+1, end);
     } 
+    return res;
+}
+size_t lcg() {
+    static size_t x = 0;
+    x = (1021 * x + 24631) % 116640;
+    return x;
+}
+
+stats Test_InsertSort_Random(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    for (int j = 0; j < 100; j++)
+    {   
+        std::vector<int> array;
+        for (int i = 0; i < numb; i++)
+        {
+            array.push_back(lcg());
+        }
+
+        auto start = std::chrono::high_resolution_clock::now();
+        res += InsertSort(array);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        //res += duration.count();
+        res.time += duration.count();
+    }
+    std::cout << "InsertSort for RANDOM array with len: " << numb << 
+        "\n\ttime: " << (double)res.time / 100 << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count / 100 <<
+        "\n\tcopy_count : " << res.copy_count / 100 << std::endl;
+    return res;
+}
+stats Test_InsertSort_Sorted(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    std::vector<int> array;
+    for (int i = 0; i < numb; i++)
+    {
+        array.push_back(i);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    res += InsertSort(array);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    res.time += duration.count();
+
+    std::cout << "InsertSort for SORTED array with len: " << numb <<
+        "\n\ttime: " << (double)res.time << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count <<
+        "\n\tcopy_count : " << res.copy_count << std::endl;
+    return res;
+
+}stats Test_InsertSort_ReverseSorted(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    std::vector<int> array;
+    for (int i = numb; i > 0; i--)
+    {
+        array.push_back(i);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    res += InsertSort(array);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    res.time += duration.count();
+
+    std::cout << "InsertSort for REVERSE-SORTED array with len: " << numb <<
+        "\n\ttime: " << (double)res.time << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count <<
+        "\n\tcopy_count : " << res.copy_count << std::endl;
+    return res;
+}
+stats Test_QuickSort_Random(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    for (int j = 0; j < 100; j++)
+    {
+        std::vector<int> array;
+        for (int i = 0; i < numb; i++)
+        {
+            array.push_back(lcg());
+        }
+
+        auto start = std::chrono::high_resolution_clock::now();
+        res += QuickSort(array, 0, array.size());
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        res.time += duration.count();
+    }
+    std::cout << "QuickSort for RANDOM array with len: " << numb <<
+        "\n\ttime: " << (double)res.time / 100 << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count / 100 <<
+        "\n\tcopy_count : " << res.copy_count / 100 << std::endl;
+    return res;
+}
+stats Test_QuickSort_Sorted(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    std::vector<int> array;
+    for (int i = 0; i < numb; i++)
+    {
+        array.push_back(i);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    res += QuickSort(array, 0, array.size());
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    res.time += duration.count();
+
+    std::cout << "QuickSort for SORTED array with len: " << numb <<
+        "\n\ttime: " << (double)res.time << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count <<
+        "\n\tcopy_count : " << res.copy_count << std::endl;
+    return res;
+
+}stats Test_QuickSort_ReverseSorted(int numb)
+{
+    //int res = 0;
+    //stats res_stats;
+    stats res;
+    std::vector<int> array;
+    for (int i = numb; i > 0; i--)
+    {
+        array.push_back(i);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    res += QuickSort(array, 0, array.size());
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    res.time += duration.count();
+
+    std::cout << "QuickSort for REVERSE-SORTED array with len: " << numb <<
+        "\n\ttime: " << (double)res.time << " microseconds" <<
+        "\n\tcomparison_count : " << res.comparison_count <<
+        "\n\tcopy_count : " << res.copy_count << std::endl;
     return res;
 }
 void printMenu()
@@ -162,6 +320,73 @@ void main()
         }
         case(3):
         {
+            Test_InsertSort_Random(1000);
+            Test_InsertSort_Sorted(1000);
+            Test_InsertSort_ReverseSorted(1000);
+            
+            Test_QuickSort_Random(1000);
+            Test_QuickSort_Sorted(1000);
+            Test_QuickSort_ReverseSorted(1000);
+            std::vector<int> numbs = { 1000,  2000, 3000, 4000, 5000, 6000, 7000,8000,9000, 10000, 25000, 50000, 100000 };
+            std::ofstream myfile;
+            myfile.open("Test_InsertSort_Random.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp  = Test_InsertSort_Random(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+            myfile.open("Test_InsertSort_Sorted.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp = Test_InsertSort_Sorted(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+            myfile.open("Test_InsertSort_ReverseSorted.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp = Test_InsertSort_ReverseSorted(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+            // -------------------------------------------//
+
+            myfile.open("Test_QuickSort_Random.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp = Test_QuickSort_Random(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+            myfile.open("Test_QuickSort_Sorted.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp = Test_QuickSort_Sorted(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+            myfile.open("Test_QuickSort_ReverseSorted.txt");
+            for (auto i : numbs)
+            {
+                stats tmp;
+                tmp = Test_QuickSort_ReverseSorted(i);
+                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            }
+            myfile.close();
+
+
+            system("pause");
             break;
         }
         case(4):
