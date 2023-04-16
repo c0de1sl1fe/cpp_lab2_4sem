@@ -30,6 +30,20 @@ stats InsertSort(std::vector<int>& arr)
     return res;
 }
 
+stats InsertSort_iter(std::vector<int>& arr)
+{
+    stats res;
+    for (std::vector<int>::iterator i = ++arr.begin(); i < arr.end(); i++) 
+    {
+        for (std::vector<int>::iterator j = i; j > arr.begin() && *((--j)++) > *j; j--, res.comparison_count++)
+        {
+            res.copy_count++;
+            std::iter_swap((--j)++, j);
+        }
+    }
+    return res;
+}
+
 stats QuickSort(std::vector<int>& arr, int begin, int end)
 {
     stats res;
@@ -65,6 +79,30 @@ stats QuickSort(std::vector<int>& arr, int begin, int end)
     {
         res += QuickSort(arr, left+1, end);
     } 
+    return res;
+}
+
+stats QuickSort_iter(std::vector<int>& arr, std::vector<int>::iterator begin, std::vector<int>::iterator end)
+{
+    stats res;
+    if (end <= begin)
+        return res;
+    std::vector<int>::iterator pivot = begin, middle = begin + 1;
+    for (std::vector<int>::iterator i = begin + 1; i < end; i++)
+    {
+        res.comparison_count++;
+        if (*i < *pivot)
+        {
+            res.copy_count++;
+            std::iter_swap(i, middle);
+            middle++;
+        }
+    }
+    res.copy_count++;
+    std::iter_swap(begin, middle - 1);
+    res += QuickSort_iter(arr, begin, middle - 1);
+    res += QuickSort_iter(arr, middle, end);
+
     return res;
 }
 size_t lcg() {
@@ -391,6 +429,73 @@ void main()
         }
         case(4):
         {
+            std::cout << "check inter and no iter version" << std::endl;
+            std::vector<int> test;
+            test.push_back(5);
+            test.push_back(3);
+            test.push_back(4);
+            test.push_back(3);
+            std::cout << "No iter InsertSort: " << std::endl;
+
+            stats tmp = InsertSort(test);
+            std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
+            for (int i = 0; i < test.size(); i++)
+            {
+                std::cout << test[i] << " ";
+            }
+            std::cout << std::endl;
+            tmp.comparison_count = 0;
+            tmp.copy_count = 0;
+            test.clear();
+            test.push_back(5);
+            test.push_back(3);
+            test.push_back(4);
+            test.push_back(3);
+
+            std::cout << "iter InsertSort: " << std::endl;
+            tmp = InsertSort_iter(test);
+            std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
+            for (int i = 0; i < test.size(); i++)
+            {
+                std::cout << test[i] << " ";
+            }
+            tmp.comparison_count = 0;
+            tmp.copy_count = 0;
+            test.clear();
+
+            std::cout << std::endl << "-----------------" << std::endl;
+            test.push_back(5);
+            test.push_back(3);
+            test.push_back(4);
+            test.push_back(3);
+            std::cout << "No iter QuickSort: " << std::endl;
+
+            tmp = QuickSort(test, 0, test.size());
+            std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
+            for (int i = 0; i < test.size(); i++)
+            {
+                std::cout << test[i] << " ";
+            }
+            std::cout << std::endl;
+            tmp.comparison_count = 0;
+            tmp.copy_count = 0;
+            test.clear();
+            test.push_back(5);
+            test.push_back(3);
+            test.push_back(4);
+            test.push_back(3);
+
+            std::cout << "iter QuickSort: " << std::endl;
+            tmp = QuickSort_iter(test, test.begin(), test.end());
+            std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
+            for (int i = 0; i < test.size(); i++)
+            {
+                std::cout << test[i] << " ";
+            }
+            tmp.comparison_count = 0;
+            tmp.copy_count = 0;
+            test.clear();
+
             exit = true;
             break;
         }
