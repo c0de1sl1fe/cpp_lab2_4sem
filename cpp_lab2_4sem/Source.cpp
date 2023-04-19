@@ -7,7 +7,9 @@
 struct stats
 {
     size_t comparison_count = 0;
-    size_t copy_count = 0;    size_t time = 0;    void operator+=(const stats& rhs)
+    size_t copy_count = 0;
+    size_t time = 0;
+    void operator+=(const stats& rhs)
     {
         comparison_count += rhs.comparison_count;
         copy_count += rhs.copy_count;
@@ -21,7 +23,7 @@ stats InsertSort(std::vector<int>& arr)
     stats res;
     for (int i = 1; i < arr.size(); i++) {
         for (int j = i; j > 0 && arr[j - 1] > arr[j]; j--, res.comparison_count++) {
-            res.copy_count++;
+            res.copy_count+=3;
             int tmp = arr[j - 1];
             arr[j - 1] = arr[j];
             arr[j] = tmp;
@@ -37,7 +39,7 @@ stats InsertSort_iter(std::vector<int>& arr)
     {
         for (std::vector<int>::iterator j = i; j > arr.begin() && *((--j)++) > *j; j--, res.comparison_count++)
         {
-            res.copy_count++;
+            res.copy_count+=3;
             std::iter_swap((--j)++, j);
         }
     }
@@ -65,8 +67,8 @@ stats QuickSort(std::vector<int>& arr, int begin, int end)
         res.comparison_count++;
         if (left <= right)
         {
+            res.copy_count+=3;
             std::swap(arr[left], arr[right]);
-            res.copy_count++;
             left++;
             right--;
         }
