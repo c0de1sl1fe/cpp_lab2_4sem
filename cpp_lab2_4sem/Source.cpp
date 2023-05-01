@@ -6,9 +6,9 @@
 
 struct stats
 {
-    size_t comparison_count = 0;
-    size_t copy_count = 0;
-    size_t time = 0;
+    long double comparison_count = 0;
+    long double copy_count = 0;
+    long double time = 0;
     void operator+=(const stats& rhs)
     {
         comparison_count += rhs.comparison_count;
@@ -22,6 +22,7 @@ stats InsertSort(std::vector<int>& arr)
 {
     stats res;
     for (int i = 1; i < arr.size(); i++) {
+        res.comparison_count++;
         for (int j = i; j > 0 && arr[j - 1] > arr[j]; j--, res.comparison_count++) {
             res.copy_count+=3;
             int tmp = arr[j - 1];
@@ -37,6 +38,7 @@ stats InsertSort_iter(std::vector<int>& arr)
     stats res;
     for (std::vector<int>::iterator i = ++arr.begin(); i < arr.end(); i++) 
     {
+        res.comparison_count++;
         for (std::vector<int>::iterator j = i; j > arr.begin() && *((--j)++) > *j; j--, res.comparison_count++)
         {
             res.copy_count+=3;
@@ -107,6 +109,7 @@ stats QuickSort_iter(std::vector<int>& arr, std::vector<int>::iterator begin, st
 
     return res;
 }
+
 size_t lcg() {
     static size_t x = 0;
     x = (1021 * x + 24631) % 116640;
@@ -140,6 +143,7 @@ stats Test_InsertSort_Random(int numb)
         "\n\tcopy_count : " << res.copy_count / 100 << std::endl;
     return res;
 }
+
 stats Test_InsertSort_Sorted(int numb)
 {
     //int res = 0;
@@ -164,7 +168,9 @@ stats Test_InsertSort_Sorted(int numb)
         "\n\tcopy_count : " << res.copy_count << std::endl;
     return res;
 
-}stats Test_InsertSort_ReverseSorted(int numb)
+}
+
+stats Test_InsertSort_ReverseSorted(int numb)
 {
     //int res = 0;
     //stats res_stats;
@@ -188,6 +194,7 @@ stats Test_InsertSort_Sorted(int numb)
         "\n\tcopy_count : " << res.copy_count << std::endl;
     return res;
 }
+
 stats Test_QuickSort_Random(int numb)
 {
     //int res = 0;
@@ -214,6 +221,7 @@ stats Test_QuickSort_Random(int numb)
         "\n\tcopy_count : " << res.copy_count / 100 << std::endl;
     return res;
 }
+
 stats Test_QuickSort_Sorted(int numb)
 {
     //int res = 0;
@@ -238,7 +246,9 @@ stats Test_QuickSort_Sorted(int numb)
         "\n\tcopy_count : " << res.copy_count << std::endl;
     return res;
 
-}stats Test_QuickSort_ReverseSorted(int numb)
+}
+
+stats Test_QuickSort_ReverseSorted(int numb)
 {
     //int res = 0;
     //stats res_stats;
@@ -262,6 +272,7 @@ stats Test_QuickSort_Sorted(int numb)
         "\n\tcopy_count : " << res.copy_count << std::endl;
     return res;
 }
+
 void printMenu()
 {
     system("cls");
@@ -272,6 +283,7 @@ void printMenu()
     std::cout << "4. Exit" << std::endl;
     std::cout << "choice: ";
 }
+
 int EnterNumber()
 {
     double tmp;
@@ -314,6 +326,7 @@ int EnterNumber()
     }
     return (int)tmp;
 }
+
 void main()
 {
 
@@ -360,71 +373,101 @@ void main()
         }
         case(3):
         {
-            Test_InsertSort_Random(1000);
-            Test_InsertSort_Sorted(1000);
-            Test_InsertSort_ReverseSorted(1000);
-            
-            Test_QuickSort_Random(1000);
-            Test_QuickSort_Sorted(1000);
-            Test_QuickSort_ReverseSorted(1000);
             std::vector<int> numbs = { 1000,  2000, 3000, 4000, 5000, 6000, 7000,8000,9000, 10000, 25000, 50000, 100000 };
             std::ofstream myfile;
+
+
+            std::ofstream myfile1, myfile2, myfile3;
+            stats tmp1, tmp2, tmp3;
             myfile.open("Test_InsertSort_Random.txt");
-            for (auto i : numbs)
-            {
-                stats tmp;
-                tmp  = Test_InsertSort_Random(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
-            }
-            myfile.close();
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp1  = Test_InsertSort_Random(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
 
-            myfile.open("Test_InsertSort_Sorted.txt");
-            for (auto i : numbs)
-            {
-                stats tmp;
-                tmp = Test_InsertSort_Sorted(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
-            }
-            myfile.close();
+            //myfile.open("Test_InsertSort_Sorted.txt");
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp2 = Test_InsertSort_Sorted(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
 
-            myfile.open("Test_InsertSort_ReverseSorted.txt");
-            for (auto i : numbs)
-            {
-                stats tmp;
-                tmp = Test_InsertSort_ReverseSorted(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
-            }
-            myfile.close();
+            //myfile.open("Test_InsertSort_ReverseSorted.txt");
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp3 = Test_InsertSort_ReverseSorted(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
+
+
 
             // -------------------------------------------//
 
-            myfile.open("Test_QuickSort_Random.txt");
+            //myfile.open("Test_QuickSort_Random.txt");
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp4 = Test_QuickSort_Random(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
+
+            //myfile.open("Test_QuickSort_Sorted.txt");
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp5 = Test_QuickSort_Sorted(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
+
+            //myfile.open("Test_QuickSort_ReverseSorted.txt");
+            //for (auto i : numbs)
+            //{
+            //    stats tmp;
+            //    tmp6 = Test_QuickSort_ReverseSorted(i);
+            //    //myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+            //}
+            //myfile.close();
+
+            myfile1.open("newTest/comparison_count_InsertSort.txt");
+            myfile2.open("newTest/copy_count_InsertSort.txt");
+            myfile3.open("newTest/time_InsertSort.txt");
             for (auto i : numbs)
             {
-                stats tmp;
-                tmp = Test_QuickSort_Random(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+                tmp1 = Test_InsertSort_Random(i);
+                tmp2 = Test_InsertSort_Sorted(i);
+                tmp3 = Test_InsertSort_ReverseSorted(i);
+                myfile1 << i << " " << tmp1.comparison_count << " " << tmp2.comparison_count << " " << tmp3.comparison_count << "\n";
+                myfile2 << i << " " << tmp1.copy_count << " " << tmp2.copy_count << " " << tmp3.copy_count << "\n";
+                myfile3 << i << " " << tmp1.time << " " << tmp2.time << " " << tmp3.time << "\n";
             }
-            myfile.close();
-
-            myfile.open("Test_QuickSort_Sorted.txt");
+            myfile1.close();
+            myfile2.close();
+            myfile3.close();
+            // -------------------------------------------//
+            myfile1.open("newTest/comparison_count_QuickSort.txt");
+            myfile2.open("newTest/copy_count_QuickSort.txt");
+            myfile3.open("newTest/time_QuickSort.txt");
             for (auto i : numbs)
             {
-                stats tmp;
-                tmp = Test_QuickSort_Sorted(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
+                tmp1 = Test_QuickSort_Random(i);
+                tmp2 = Test_QuickSort_Sorted(i);
+                tmp3 = Test_QuickSort_ReverseSorted(i);
+                myfile1 << i << " " << tmp1.comparison_count << " " << tmp2.comparison_count << " " << tmp3.comparison_count << "\n";
+                myfile2 << i << " " << tmp1.copy_count << " " << tmp2.copy_count << " " << tmp3.copy_count << "\n";
+                myfile3 << i << " " << tmp1.time << " " << tmp2.time << " " << tmp3.time << "\n";
             }
-            myfile.close();
-
-            myfile.open("Test_QuickSort_ReverseSorted.txt");
-            for (auto i : numbs)
-            {
-                stats tmp;
-                tmp = Test_QuickSort_ReverseSorted(i);
-                myfile << i << " " << tmp.comparison_count << " " << tmp.copy_count << " " << tmp.time << "\n";
-            }
-            myfile.close();
-
+            myfile1.close();
+            myfile2.close();
+            myfile3.close();
 
             system("pause");
             break;
