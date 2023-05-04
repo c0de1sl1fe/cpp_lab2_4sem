@@ -48,40 +48,41 @@ stats InsertSort_iter(std::vector<int>& arr)
     return res;
 }
 
-stats QuickSort(std::vector<int>& arr, int begin, int end)
+stats QuickSort(std::vector<int>& arr, int left, int right)
 {
     stats res;
-    int left = begin, right = end - 1;
-    int mid = (left + right) / 2;
-    while (left <= right)
+    int i = left, j = right;
+    //int mid = (i + j) / 2;
+    int pivot = arr[(left + right) / 2];
+    while (i <= j)
     {
-        while (arr[left] < arr[mid])
+        while (arr[i] < pivot)
         {
             res.comparison_count++;
-            left++;
+            i++;
         }
         res.comparison_count++;
-        while (arr[right] > arr[mid])
+        while (arr[j] > pivot)
         {
             res.comparison_count++;
-            right--;
+            j--;
         }
         res.comparison_count++;
-        if (left <= right)
+        if (i <= j)
         {
             res.copy_count+=3;
-            std::swap(arr[left], arr[right]);
-            left++;
-            right--;
+            std::swap(arr[i], arr[j]);
+            i++;
+            j--;
         }
     }
-    if (begin < right)
+    if (left < j)
     {
-        res += QuickSort(arr, begin, right+1);
+        res += QuickSort(arr, left, j);
     }
-    if (end > left)
+    if (right > i)
     {
-        res += QuickSort(arr, left+1, end);
+        res += QuickSort(arr, i, right);
     } 
     return res;
 }
@@ -209,7 +210,7 @@ stats Test_QuickSort_Random(int numb)
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-        res += QuickSort(array, 0, array.size());
+        res += QuickSort(array, 0, array.size()-1);
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
@@ -234,7 +235,7 @@ stats Test_QuickSort_Sorted(int numb)
     }
 
     auto start = std::chrono::high_resolution_clock::now();
-    res += QuickSort(array, 0, array.size());
+    res += QuickSort(array, 0, array.size()-1);
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
@@ -260,7 +261,7 @@ stats Test_QuickSort_ReverseSorted(int numb)
     }
 
     auto start = std::chrono::high_resolution_clock::now();
-    res += QuickSort(array, 0, array.size());
+    res += QuickSort(array, 0, array.size()-1);
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
@@ -358,11 +359,14 @@ void main()
         case(2):
         {
             std::vector<int> test;
+            test.push_back(8);
             test.push_back(5);
+            test.push_back(1);
+            test.push_back(2);
+            test.push_back(6);
             test.push_back(3);
-            test.push_back(4);
-            test.push_back(3);
-            stats tmp = QuickSort(test, 0, test.size());
+            stats tmp = QuickSort(test, 0, test.size()-1);
+            //stats tmp = QuickSort_iter(test, test.begin(), test.end());
             std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
             for (int i = 0; i < test.size(); i++)
             {
@@ -515,7 +519,7 @@ void main()
             test.push_back(3);
             std::cout << "No iter QuickSort: " << std::endl;
 
-            tmp = QuickSort(test, 0, test.size());
+            tmp = QuickSort(test, 0, test.size()-1);
             std::cout << tmp.comparison_count << " " << tmp.copy_count << std::endl;
             for (int i = 0; i < test.size(); i++)
             {
